@@ -3,11 +3,22 @@ import OpenAI from 'openai';
 import { db } from '../index';
 
 const router = express.Router();
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+function getOpenRouter() {
+  if (!process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY === 'placeholder_key') {
+    throw new Error('OpenRouter API key not configured');
+  }
+  return new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.OPENROUTER_API_KEY,
+  });
+}
 
 // Get AI recommendations
 router.post('/recommendations', async (req, res) => {
   try {
+    const openrouter = getOpenRouter();
+    
     // Fetch recent data
     const expensesSnapshot = await db.collection('expenses').orderBy('date', 'desc').limit(50).get();
     const savingsSnapshot = await db.collection('savings').get();
@@ -32,8 +43,8 @@ router.post('/recommendations', async (req, res) => {
     Format as JSON with recommendations array.
     `;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+    const completion = await openrouter.chat.completions.create({
+      model: "openai/gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 500
     });
@@ -41,7 +52,11 @@ router.post('/recommendations', async (req, res) => {
     const recommendations = JSON.parse(completion.choices[0].message.content || '{"recommendations": []}');
     res.json(recommendations);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get AI recommendations' });
+    if (error instanceof Error && error.message === 'OpenRouter API key not configured') {
+      res.status(503).json({ error: 'AI service not configured' });
+    } else {
+      res.status(500).json({ error: 'Failed to get AI recommendations' });
+    }
   }
 });
 

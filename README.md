@@ -16,7 +16,7 @@ A comprehensive application to track family expenses, manage savings, plan large
 - **Frontend**: Vue 3, TypeScript, Chart.js
 - **Backend**: Node.js, TypeScript, Express
 - **Database**: Firebase Firestore
-- **AI**: OpenAI GPT
+- **AI**: OpenRouter API
 - **Bot**: Telegram Bot API
 - **File Processing**: PDF parsing
 
@@ -51,7 +51,7 @@ Create `backend/.env` file:
 ```env
 PORT=3000
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
-OPENAI_API_KEY=your_openai_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
 ```
 
 ### 4. Telegram Bot Setup
@@ -60,9 +60,9 @@ OPENAI_API_KEY=your_openai_api_key_here
 2. Create a new bot with `/newbot`
 3. Copy the token to your `.env` file
 
-### 5. OpenAI Setup
+### 5. OpenRouter Setup
 
-1. Get API key from https://platform.openai.com
+1. Get API key from https://openrouter.ai
 2. Add to your `.env` file
 
 ### 6. Run the Application

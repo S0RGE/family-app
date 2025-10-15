@@ -5,13 +5,14 @@ class TelegramBotService {
   private bot: TelegramBot | null = null;
 
   init() {
-    if (!process.env.TELEGRAM_BOT_TOKEN) {
-      console.log('Telegram bot token not provided');
+    if (!process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN === 'placeholder_token') {
+      console.log('Telegram bot not configured - skipping initialization');
       return;
     }
 
     this.bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
     this.setupCommands();
+    console.log('Telegram bot initialized successfully');
   }
 
   private setupCommands() {

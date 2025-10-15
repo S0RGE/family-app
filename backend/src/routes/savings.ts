@@ -12,13 +12,14 @@ router.post('/', async (req, res) => {
       amount: parseFloat(amount),
       source,
       description,
-      date: new Date(date),
+      date: date ? new Date(date) : new Date(),
       createdAt: new Date()
     };
 
     const docRef = await db.collection('savings').add(saving);
     res.json({ id: docRef.id, ...saving });
   } catch (error) {
+    console.error('Savings error:', error);
     res.status(500).json({ error: 'Failed to add savings' });
   }
 });
